@@ -1,0 +1,48 @@
+div(ng-include='"components/navbar/navbar.html"')
+
+header#banner.hero-unit
+  .container
+    h1 Lookup service
+    p.lead Testing the lookup service API and integration
+    p 
+      | (active providers:
+      span(ng-repeat='provider in lookupProviders')
+        | {{provider.provider}},
+      | )
+
+.container
+  .row
+    .col-lg-12
+      h1.page-header Features:
+      ul.nav.nav-tabs.nav-stacked.col-md-4.col-lg-4.col-sm-6(ng-repeat='item in lookupItems')
+        li
+          h4 
+            | {{item.term}}
+            button.close(type='button', ng-click='deleteLookupItem(item)') ×
+         
+          hr
+         
+          div(ng-repeat='result in item.results')
+            p {{result.result.description}}
+            p.text-right
+              | [ 
+              a(href='{{result.result.uri}}')
+                | {{result.result.provider}}
+              | ]
+
+
+  form.item-form
+    label Lookup a word or thing
+    p.input-group
+      input.form-control(type='text', placeholder='Enter an item here.', ng-model='newTerm')
+      span.input-group-btn
+        button.btn.btn-primary(type='submit', ng-click='addLookupItem()') Add New
+
+footer.footer
+  .container
+    p
+      | Adam Brown
+      = ' | '
+      a(href='https://twitter.com/adamarthurryan') @adamarthurryan
+      = ' | '
+      a(href='http://madanworb.com') Portfolio
