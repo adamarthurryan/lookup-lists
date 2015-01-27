@@ -48,42 +48,55 @@ User.find({}).remove(function() {
       console.log('finished populating users');
       List.find({}).remove(function(){
         List.create({
-          user: userTest,
+          owner: userAdmin,
           title: "animals",
+          providers: [{
+            key: "omegawiki"
+          }],
           items: [{
-            label:"aardvark", 
-            lookupProvider:"omegawiki",
-            uri: "http://www.omegawiki.org/DefinedMeaning:1031502"
+            term:"aardvark", 
+            results: [ {
+                uri: "http://www.omegawiki.org/DefinedMeaning:1031502",
+                description: "an anteater?",
+                provider: "omegawiki"
+              }, 
+            ],     
           }, {
-            label:"bear", 
+            term:"bear", 
           }, {
-            label: "cat", 
+            term: "cat", 
           }, { 
-            label: "dog",
+            term: "dog",
           }]
         }, {
-          user: userAdmin,
-          title: "books",
+          owner: userAdmin,
+          title: "books", 
+          providers: [{
+            key: "dbpedia"
+          }],
           items: [{
-            label: "Art in Theory",
+            term: "Art in Theory",
           }, { 
-            label: "Begin Chess",
+            term: "Begin Chess",
           }, { 
-            label: "Collins German Dictionary",
+            term: "Collins German Dictionary",
           }, { 
-            label: "Dance, Dance, Dance"
+            term: "Dance, Dance, Dance"
           }]
         }, {
-          user: userAdmin,
-          title: "wordnets",
+          owner: userTest,
+          title: "wordnets", 
+          providers: [{
+            key: "dbpedia"
+          }],
           items: [{
-            label: "Multi Wordnet",
+            term: "Multi Wordnet",
           }, { 
-            label: "Open Multilingual Wordnet",
+            term: "Open Multilingual Wordnet",
           }, { 
-            label: "Princton Wordnet of English",
+            term: "Princton Wordnet of English",
           }, { 
-            label: "Mimida Multilingual Semantic Network"
+            term: "Mimida Multilingual Semantic Network"
           }]
         }, 
         function (err) {

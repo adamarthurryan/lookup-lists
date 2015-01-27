@@ -9,7 +9,6 @@ var router = express.Router();
 
 //get a list of providers
 router.get('/providers', controller.providers);
-router.get('/dbpediatest', controller.dbpediatest);
 
 //look up a search term will all providers
 router.get('/:term', controller.lookup);

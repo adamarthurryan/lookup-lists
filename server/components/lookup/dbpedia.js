@@ -9,7 +9,7 @@ exports.search = function(term, callbackDone, callbackResults ) {
   var emitter = new events.EventEmitter();
 
   var options = {
-    hostname: host,
+    hostname: host,  
     port: 80,
     path: lookupPath(term),
     method: 'GET',

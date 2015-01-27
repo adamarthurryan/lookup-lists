@@ -5,11 +5,32 @@ var controller = require('./list.controller');
 
 var router = express.Router();
 
+/**
+ * Using RESTful conventions for endpoints.
+ * GET     /              ->  index
+ * POST    /              ->  create
+ * GET     /:id          ->  show
+ * PUT     /:id          ->  update
+ * DELETE  /:id          ->  destroy
+
+ * GET      /:id/items/:itemid  ->  show a list item
+ * POST     /:id/items          ->  append a new list item
+ * PUT      /:id/items/:itemid  ->  modify a list item
+ * DELETE   /:id/items/:itemid  ->  delete a list item
+ */
+
+
 router.get('/', controller.index);
 router.get('/:id', controller.show);
 router.post('/', controller.create);
 router.put('/:id', controller.update);
 router.patch('/:id', controller.update);
 router.delete('/:id', controller.destroy);
+
+router.get('/:id/items/:itemid', controller.showItem)
+router.post('/:id/items/', controller.createItem)
+router.put('/:id/items/:itemid', controller.updateItem)
+router.patch('/:id/items/:itemid', controller.updateItem)
+router.delete('/:id/items/:itemid', controller.destroyItem)
 
 module.exports = router;

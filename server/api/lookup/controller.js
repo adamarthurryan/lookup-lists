@@ -5,35 +5,6 @@ var http = require('http');
 
 var lookup = require('../../components/lookup');
 
-exports.dbpediatest = function (req, res) {
-  console.log("dbpediatest");
-  var options = {
-    hostname: 'lookup.dbpedia.org',
-    port: 80,
-    path: '/api/search.asmx/KeywordSearch?QueryString=berlin',
-    method: 'GET',
-    headers: {"Accept": "application/json"}
-  } 
-
-  var request = http.request(options, function(queryResponse) {
-    res.type('application/json');
-    queryResponse.pipe(res);
-    /*
-    console.log('STATUS: ' + response.statusCode);
-    console.log('HEADERS: ' + JSON.stringify(response.headers));
-    response.setEncoding('utf8');
-    response.on('data', function (chunk) {
-      console.log('BODY: ' + chunk);
-    });
-  */
-  });
-  
-  request.on('error', function(e) {
-    console.log('problem with request: ' + e.message);
-  });
-  
-  request.end();
-}
 
 exports.providers = function (req, res) {
   var keys = lookup.providers();
