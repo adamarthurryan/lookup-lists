@@ -1,9 +1,16 @@
 'use strict';
 
 angular.module('learningMeanListsApp')
-  .controller('ListCtrl', function ($scope, $http, socket) {
+  .controller('ListIndexCtrl', function ($scope, $http, socket) {
     //initialize the scope
-    $scope.lookupItems= [];
+    $scope.lists= [];
+    
+    $http.get('/api/lists').success(function(lists) {
+      $scope.lists = lists;
+      socket.syncUpdates('list', $scope.lists);
+    });
+
+    /*
     $scope.lookupProviders = [];
 
     //get the list of lookup providers
@@ -11,30 +18,29 @@ angular.module('learningMeanListsApp')
       $scope.lookupProviders = lookupProviders;
       //socket.syncUpdates('thing', $scope.awesomeThings);
     });
+    */
+
+
 
     //add a new lookup item
-    $scope.addLookupItem = function() {
+    $scope.createList = function() {
       //only if not empty
-      if($scope.newTerm === '') {
+      if($scope.newListTitle === '') {
         return;
       }
 
-      //create a new lookup item for the term
-      var item = { term:$scope.newTerm, results: [] }; 
-      $scope.lookupItems.push(item);
+      //post the list to the server
+      $http.post('/api/lists', { title: $scope.newListTitle })
+      .success(function(list){
+        $scope.lists.push(list);
+      });
+      $scope.newListTitle = '';
+    }
 
-      //retrieve the results for this item
-      // !!! to do: use oboe and/or angular-oboe for streaming json requests
-      $http.get('/api/lookup/'+$scope.newTerm/*+'/provider/dbpedia'*/).success(function(response) {
-        item['results'] = response.results;
-     });
-      
-      $scope.newTerm = '';
-    };
-
-
-    $scope.deleteLookupItem = function(item) {
-      _.remove($scope.lookupItems, item);
+    $scope.editList = function(item) {
+      //open view/edit route for this item
+      $location.path('./edit/'+item._id);
+      //_.remove($scope.lookupItems, item);
     };
 
     $scope.$on('$destroy', function () {

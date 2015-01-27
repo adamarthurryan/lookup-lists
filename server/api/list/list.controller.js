@@ -2,7 +2,8 @@
 'use strict';
 
 var List = require('./list.model');
-
+var mongoose = require('mongoose');
+var _ = require('lodash');
 
 // Get list of lists
 exports.index = function(req, res) {
@@ -27,13 +28,15 @@ exports.show = function(req, res) {
 
 // Creates a new list in the DB.
 exports.create = function(req, res) {
-  List.create(req.body, function(err, list) {
+  //we do not allow the api client to change the owner willy-nilly!
+  if (req.body.owner) { delete req.body.owner; }
+
+  //add the current user to the list object
+  var list = _.merge(req.body, {owner: req.user._id});
+
+  List.create(list, function(err, list) {
     if(err) { return handleError(res, err); }
-    
-    // !!! how is this tied to the current user?
-    //is this how?
-    list.owner = req.user;
-    return res.json(201, list);
+    return res.json(201,list);
   });
 };
 
@@ -43,16 +46,22 @@ exports.update = function(req, res) {
   //we do not allow the api client to change ids willy-nilly!
   if(req.body._id) { delete req.body._id; }
 
+  //we do not allow the api client to change the owner willy-nilly!
+  if (req.body.owner) { delete req.body.owner; }
+
+  //find the list
   List.findById(req.params.id, function (err, list) {
     if (err) { return handleError(res, err); }
     if(!list) { return res.send(404); }
 
-    // !!! should require user authentication
-    // is this right?
-    if (list.owner != req.user)
+    // require user authentication
+    if (! mongoose.Types.ObjectId(list.owner).equals(req.user._id))
       {return res.send(401);}
 
+    //merge in the new values
     var updated = _.merge(list, req.body);
+
+    //save and return
     updated.save(function (err) {
       if (err) { return handleError(res, err); }
       return res.json(200, list);
@@ -62,15 +71,16 @@ exports.update = function(req, res) {
 
 // Deletes a list from the DB.
 exports.destroy = function(req, res) {
+  // find the list
   List.findById(req.params.id, function (err, list) {
     if(err) { return handleError(res, err); }
     if(!list) { return res.send(404); }
     
-    // !!! should require user authentication
-    // is this right?
-    if (list.owner != req.user)
+    // require user authentication
+    if (! mongoose.Types.ObjectId(list.owner).equals(req.user._id))
       {return res.send(401);}
 
+    // and remove it
     list.remove(function(err) {
       if(err) { return handleError(res, err); }
       return res.send(204);
@@ -106,18 +116,18 @@ exports.createItem = function(req, res) {
     if (err) { return handleError(res, err); }
     if(!list) { return res.send(404); }
 
-    // !!! should require user authentication
-    // is this right?
-    if (list.owner != req.user)
+    // should require user authentication
+    if (! mongoose.Types.ObjectId(list.owner).equals(req.user._id))
       {return res.send(401);}
 
     //add the item to the list 
-    var item = list.items.push(req.body);
+    var index = list.items.push(req.body) -1;
+    var item = list.items[index];
 
-    //and save
+    //save and return
     list.save(function (err) {
       if (err) { return handleError(res, err); }
-      return res.json(201, updatedItem);
+      return res.json(201, item);
     });
   });
 }
@@ -135,9 +145,8 @@ exports.updateItem = function(req, res) {
     if (err) { return handleError(res, err); }
     if(!list) { return res.send(404); }
 
-    // !!! should require user authentication
-    // is this right?
-    if (list.owner != req.user)
+    // should require user authentication
+    if (! mongoose.Types.ObjectId(list.owner).equals(req.user._id))
       {return res.send(401);}
 
     //lookup the item
@@ -167,9 +176,8 @@ exports.destroyItem = function(req, res) {
     if (err) { return handleError(res, err); }
     if(!list) { return res.send(404); }
 
-    // !!! should require user authentication
-    // is this right?
-    if (list.owner != req.user)
+    // should require user authentication
+    if (! mongoose.Types.ObjectId(list.owner).equals(req.user._id))
       {return res.send(401);}
 
     //lookup the item 

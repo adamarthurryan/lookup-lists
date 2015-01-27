@@ -3,12 +3,12 @@
 angular.module('learningMeanListsApp')
   .config(function ($routeProvider) {
     $routeProvider
-      .when('/list', {
-        templateUrl: 'app/lists/index/index.html',
+      .when('/lists', {
+        templateUrl: 'app/list/index/index.html',
         controller: 'ListIndexCtrl'
-      });
+      })
       .when('/list/edit/:id', {
-        templateUrl: 'app/lists/edit/edit.html',
+        templateUrl: 'app/list/edit/edit.html',
         controller: 'ListEditCtrl'
       });
   });

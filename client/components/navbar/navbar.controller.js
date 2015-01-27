@@ -5,6 +5,9 @@ angular.module('learningMeanListsApp')
     $scope.menu = [{
       'title': 'Home',
       'link': '/'
+    }, {
+      'title' : 'Lists',
+      'link': '/lists'
     }];
 
     $scope.isCollapsed = true;

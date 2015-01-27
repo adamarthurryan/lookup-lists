@@ -2,43 +2,33 @@ div(ng-include='"components/navbar/navbar.html"')
 
 header#banner.hero-unit
   .container
-    h1 Lookup service
-    p.lead Testing the lookup service API and integration
-    p 
-      | (active providers:
-      span(ng-repeat='provider in lookupProviders')
-        | {{provider.provider}},
-      | )
+    h1 Lists
+    p.lead Lists in the database
 
 .container
   
   .row
     .col-lg-4
       form.item-form
-        label Lookup a word or thing
+        label New list
         p.input-group
-          input.form-control(type='text', placeholder='Enter an item here.', ng-model='newTerm')
+          input.form-control(type='text', placeholder='List title.', ng-model='newListTitle')
           span.input-group-btn
-            button.btn.btn-primary(type='submit', ng-click='addLookupItem()') Add New
+            button.btn.btn-primary(type='submit', ng-click='createList()') Create
 
   .row
     .col-lg-12
-      h1.page-header Lookups:
-      ul.nav.nav-tabs.nav-stacked.col-md-4.col-lg-4.col-sm-6(ng-repeat='item in lookupItems')
+      h1.page-header Lists:
+      ul.nav.nav-tabs.nav-stacked.col-md-4.col-lg-4.col-sm-6(ng-repeat='list in lists')
         li
           h4 
-            | {{item.term}}
-            button.close(type='button', ng-click='deleteLookupItem(item)') ×
+            a(href=href='./list/edit/{{list._id}}')
+              | {{list.title}}
          
           hr
          
-          div(ng-repeat='result in item.results')
-            p {{result.result.description}}
-            p.text-right
-              | [ 
-              a(href='{{result.result.uri}}')
-                | {{result.result.provider}}
-              | ]
+          div(ng-repeat='item in list.items')
+            p {{item.term}}
 
 
   
