@@ -11,9 +11,19 @@ header#banner.hero-unit
       | )
 
 .container
+  
+  .row
+    .col-lg-4
+      form.item-form
+        label Lookup a word or thing
+        p.input-group
+          input.form-control(type='text', placeholder='Enter an item here.', ng-model='newTerm')
+          span.input-group-btn
+            button.btn.btn-primary(type='submit', ng-click='addLookupItem()') Add New
+
   .row
     .col-lg-12
-      h1.page-header Features:
+      h1.page-header Lookups:
       ul.nav.nav-tabs.nav-stacked.col-md-4.col-lg-4.col-sm-6(ng-repeat='item in lookupItems')
         li
           h4 
@@ -31,12 +41,7 @@ header#banner.hero-unit
               | ]
 
 
-  form.item-form
-    label Lookup a word or thing
-    p.input-group
-      input.form-control(type='text', placeholder='Enter an item here.', ng-model='newTerm')
-      span.input-group-btn
-        button.btn.btn-primary(type='submit', ng-click='addLookupItem()') Add New
+  
 
 footer.footer
   .container

@@ -20,12 +20,12 @@ angular.module('learningMeanListsApp')
       }
 
       //create a new lookup item for the term
-      var item = { term:$scope.newTerm } 
+      var item = { term:$scope.newTerm, results: [] }; 
       $scope.lookupItems.push(item);
 
       //retrieve the results for this item
       // !!! to do: use oboe and/or angular-oboe for streaming json requests
-      $http.get('/api/lookup/'+$scope.newTerm+'/provider/omegawiki').success(function(response) {
+      $http.get('/api/lookup/'+$scope.newTerm/*+'/provider/dbpedia'*/).success(function(response) {
         item['results'] = response.results;
      });
       

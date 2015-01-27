@@ -1,9 +1,15 @@
 var baseURL = "http://www.omegawiki.org";
 
 var oboe = require('oboe');
+var events = require('events');
 
-/* Searches for the given term and returns results to the callback.*/
-exports.search = function(term, callbackDone, callbackResults ) {
+/* Searches for the given term and returns as events.
+   Listeners should listen to:
+    done - the results have all been returned
+    error(object) - an error occured
+    result(object) - a result was returned */
+exports.search = function(term) {
+  var emitter = new events.EventEmitter();
 
   //create an oboe stream from the search
   //oboe will parse the incoming javascript according to the supplied patterns
@@ -21,19 +27,25 @@ exports.search = function(term, callbackDone, callbackResults ) {
         object: meaning 
       }
 
-      callbackResults(null, result);
+      emitter.emit('result', result);
       
     })
     .node('error', function (error) {
+      
+      // !!! should filter for not-found errors
+      // these are not errors in the logic of the api
       var error = {
-        description: "not found",
+        description: "unknown error",
       }
 
-      callbackResults(error, null);
+      emitter.emit('error', error);
     })
     .done(function () {
-      callbackDone();
+      emitter.emit('done');
     });
+    //!!! should have error handling
+
+    return emitter;
 }
 
 

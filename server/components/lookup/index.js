@@ -10,6 +10,9 @@ var providers = {};
 var providerOmegawiki = require('./omegawiki');
 registerProvider('omegawiki', providerOmegawiki);
 
+var providerDbpedia = require('./dbpedia');
+registerProvider('dbpedia', providerDbpedia);
+
 /* Add the given provider to the hash. */
 function registerProvider (key, provider) {
   providers[key] = provider;
@@ -32,15 +35,43 @@ exports.lookup = function (term) {
   //a counter of the number of providers upon which we are waiting for results
   var count = 0;
 
+  var isFirstResult = true;
+
   //for each provider
   _.each(_.keys(providers), function (key) {
     count++;
-    doLookup(term, key, stream, function() {
+
+    var lookup = doLookup(term, key);
+
+    lookup.on('result', function(result) {
+      output = {
+        result: {
+          provider: key,
+          term: term,
+          uri: result.uri,
+          description: result.description,
+          object: result.object,
+        }
+      }
+
+      if (!isFirstResult) 
+        stream.push(', ');
+
+      stream.push(JSON.stringify(output));
+      isFirstResult=false;
+    });
+
+    lookup.on('done', function() {
       //when all the providers have returned, then we can close the stream
-      if (count-- <= 0) {
+      count --;
+      if (count <= 0) {
         stream.push(']}');
         stream.push(null);
       }
+    });
+
+    lookup.on('error', function(error) {
+      console.log('error in lookup:' + error);
     });
   });
  
@@ -59,45 +90,11 @@ exports.lookupWithProvider = function (term, key) {
  
   stream.push('{ "results": [');
 
-  doLookup(term, key, stream, function() {
-    //when the results are all in, close the stream
-    stream.push(']}');
-    stream.push(null);
-  });
-
-  return stream;
-}
-
-/* Looks up the given term with the given provider, writing the results to 
-  the given string. When the results are in, the given callback will be called.*/
-function doLookup (term, key, stream, callbackDone) {
-  var provider = providers[key];
-
   var isFirstResult = true;
 
-  //get the results
-  provider.search(term, callbackDone, function(err, result) {
+  var lookup = doLookup(term, key);
 
-    if (err) {
-      //the output will be information about the provider
-      output = {
-        no_result: {
-          provider: key,
-          term: term,
-          object: err
-        }
-      }
-
-      if (!isFirstResult) 
-        stream.push(', ');
-
-      stream.push(JSON.stringify(output));
-      isFirstResult=false;
-      return;
-    } 
-      
-    //add information about the provider
-    //and verify that the results have the right structure
+  lookup.on('result', function(result) {
     output = {
       result: {
         provider: key,
@@ -107,11 +104,38 @@ function doLookup (term, key, stream, callbackDone) {
         object: result.object,
       }
     }
-    //then push the result to the stream
 
-    if (!isFirstResult)
+    if (!isFirstResult) 
       stream.push(', ');
+
     stream.push(JSON.stringify(output));
     isFirstResult=false;
   });
+
+  lookup.on('done', function() {
+    //the providers has returned, then we can close the stream
+    stream.push(']}');
+    stream.push(null);
+  });
+
+  lookup.on('error', function(error) {
+    console.log('error in lookup:' + error);
+  });
+
+  return stream;
+}
+
+/* Looks up the given term with the given provider, writing the results to 
+  the given string. The following events will be generated:
+    done
+    result
+    error
+    */
+function doLookup (term, key) {
+  var provider = providers[key];
+
+  //var isFirstResult = true;
+
+  //get the results
+  return provider.search(term);
 }
