@@ -2,7 +2,9 @@ div(ng-include='"components/navbar/navbar.html"')
 
 header#banner.hero-unit
   .container
-    h1 {{list.title}}
+    h1 
+      | {{list.title}} 
+      | {{(list.owner._id == getCurrentUser()._id) ? '' : '('+list.owner.name+')'}}
     p 
       | (active providers:
       span(ng-repeat='provider in lookupProviders')
@@ -12,7 +14,7 @@ header#banner.hero-unit
 .container
   
   .row
-    .col-lg-4
+    .col-lg-4(ng-show='isOwner()')
       form.item-form
         label Add an item
         p.input-group
@@ -22,12 +24,15 @@ header#banner.hero-unit
 
   .row
     .col-lg-12
-      h1.page-header Items:
       ul.nav.nav-tabs.nav-stacked.col-md-4.col-lg-4.col-sm-6(ng-repeat='item in list.items')
         li
           h4 
             | {{item.term}}
-            button.close(type='button', ng-click='deleteListItem(item)') ×
+            | &nbsp; 
+            button.refresh(ng-show='isOwner()', type='button', ng-click='refreshListItem(item)')
+              i.fa.fa-refresh
+            button.close(ng-show='isOwner()', type='button', ng-click='deleteListItem(item)') 
+              i.fa.fa-remove
          
           hr
          
@@ -41,6 +46,10 @@ header#banner.hero-unit
 
 
   
+  .row
+    .col-lg-12
+      code
+        {{jsonlist}}
 
 footer.footer
   .container

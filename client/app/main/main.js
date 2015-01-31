@@ -3,7 +3,7 @@
 angular.module('learningMeanListsApp')
   .config(function ($routeProvider) {
     $routeProvider
-      .when('/', {
+      .when('/old', {
         templateUrl: 'app/main/main.html',
         controller: 'MainCtrl'
       });

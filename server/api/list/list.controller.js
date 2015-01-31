@@ -136,7 +136,11 @@ exports.createItem = function(req, res) {
 
 // updates a list item
 exports.updateItem = function(req, res) {
-  //delete the id parameter in the request body
+  console.log('updateItem');
+  console.log('list id: '+req.params.id);
+  console.log('item id: '+req.params.itemid);
+
+  //delete the id parameter and owner parameter in the request body
   //we do not allow the api client to change ids willy-nilly!
   if(req.body._id) { delete req.body._id; }
 
@@ -149,12 +153,24 @@ exports.updateItem = function(req, res) {
     if (! mongoose.Types.ObjectId(list.owner).equals(req.user._id))
       {return res.send(401);}
 
+    
     //lookup the item
     var item = list.items.id(req.params.itemid);
+
     if (!item) { return res.send(404); }
+
+    //console.log(JSON.stringify(item));
+    //console.log(JSON.stringify(req.body));
+
 
     //merge the passed item with the existing item
     var updatedItem = _.merge(item, req.body);
+
+    //replace the original item in the list
+    list.items.pull(item);
+    list.items.push(updatedItem);
+
+    console.log(list);
 
     //is it now in the list or do we have to do something like the following?
     //item.remove();
@@ -190,7 +206,7 @@ exports.destroyItem = function(req, res) {
     list.save(function (err) {
       if (err) { return handleError(res, err); }
       
-      return res.send(204, updatedItem);
+      return res.send(204);
     });
   });
 };

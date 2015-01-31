@@ -3,32 +3,36 @@ div(ng-include='"components/navbar/navbar.html"')
 header#banner.hero-unit
   .container
     h1 Lists
-    p.lead Lists in the database
+    //p.lead Lists in the database
 
 .container
   
   .row
-    .col-lg-4
+    //show the list add function only if a user is logged in
+    .col-lg-6(ng-show='isLoggedIn()')
       form.item-form
         label New list
         p.input-group
-          input.form-control(type='text', placeholder='List title.', ng-model='newListTitle')
+          input.form-control(type='text', placeholder='List title', ng-model='newListTitle')
           span.input-group-btn
             button.btn.btn-primary(type='submit', ng-click='createList()') Create
+    .col-lg-6(ng-hide='isLoggedIn()')
+      p Log in or create an account to add or edit a list.
 
   .row
     .col-lg-12
-      h1.page-header Lists:
       ul.nav.nav-tabs.nav-stacked.col-md-4.col-lg-4.col-sm-6(ng-repeat='list in lists')
         li
           h4 
-            a(href=href='./list/edit/{{list._id}}')
+            a(href=href='./edit/{{list._id}}')
               | {{list.title}}
-         
+            // the list owner only shows if it is not the current user  
+            | &nbsp; {{(list.owner._id == getCurrentUser()._id) ? '' : '('+list.owner.name+')'}}
           hr
          
           div(ng-repeat='item in list.items')
             p {{item.term}}
+
 
 
   

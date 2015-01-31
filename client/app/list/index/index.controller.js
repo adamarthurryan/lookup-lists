@@ -1,13 +1,19 @@
 'use strict';
 
 angular.module('learningMeanListsApp')
-  .controller('ListIndexCtrl', function ($scope, $http, socket) {
+
+  .controller('ListIndexCtrl', function ($scope, $http, socket, Auth) {
     //initialize the scope
     $scope.lists= [];
+
+    $scope.getCurrentUser = Auth.getCurrentUser;
+    $scope.isLoggedIn = Auth.isLoggedIn;
     
+
     $http.get('/api/lists').success(function(lists) {
       $scope.lists = lists;
       socket.syncUpdates('list', $scope.lists);
+
     });
 
     /*
@@ -46,4 +52,12 @@ angular.module('learningMeanListsApp')
     $scope.$on('$destroy', function () {
       //socket.unsyncUpdates('thing');
     });
+
+    $scope.displayListUser = function (list) {
+      return list.owner._id +" - " +$scope.user._id;  
+      if (list.owner._id == $scope.user._id)
+        return '';
+      else
+        return '('+list.owner.name+')';
+    }
   });

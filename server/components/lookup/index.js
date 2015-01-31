@@ -13,6 +13,9 @@ registerProvider('omegawiki', providerOmegawiki);
 var providerDbpedia = require('./dbpedia');
 registerProvider('dbpedia', providerDbpedia);
 
+var providerOpenLibrary = require('./openlibrary');
+registerProvider('openlibrary', providerOpenLibrary);
+
 /* Add the given provider to the hash. */
 function registerProvider (key, provider) {
   providers[key] = provider;
@@ -45,13 +48,11 @@ exports.lookup = function (term) {
 
     lookup.on('result', function(result) {
       output = {
-        result: {
-          provider: key,
-          term: term,
-          uri: result.uri,
-          description: result.description,
-          object: result.object,
-        }
+        provider: key,
+        term: term,
+        uri: result.uri,
+        description: result.description,
+        object: result.object,
       }
 
       if (!isFirstResult) 
@@ -71,7 +72,7 @@ exports.lookup = function (term) {
     });
 
     lookup.on('error', function(error) {
-      console.log('error in lookup:' + error);
+      console.log('error in lookup:' + JSON.stringify(error));
     });
   });
  
@@ -95,14 +96,12 @@ exports.lookupWithProvider = function (term, key) {
   var lookup = doLookup(term, key);
 
   lookup.on('result', function(result) {
-    output = {
-      result: {
-        provider: key,
-        term: term,
-        uri: result.uri,
-        description: result.description,
-        object: result.object,
-      }
+    output =  {
+      provider: key,
+      term: term,
+      uri: result.uri,
+      description: result.description,
+      object: result.object,
     }
 
     if (!isFirstResult) 

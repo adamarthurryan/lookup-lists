@@ -8,5 +8,5 @@ module.exports = {
     uri: 'mongodb://localhost/learningmeanlists-dev'
   },
 
-  seedDB: true
+  seedDB: false
 };

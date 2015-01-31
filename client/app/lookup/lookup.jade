@@ -33,11 +33,11 @@ header#banner.hero-unit
           hr
          
           div(ng-repeat='result in item.results')
-            p {{result.result.description}}
+            p {{result.description}}
             p.text-right
               | [ 
-              a(href='{{result.result.uri}}')
-                | {{result.result.provider}}
+              a(href='{{result.uri}}')
+                | {{result.provider}}
               | ]
 
 
