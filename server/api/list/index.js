@@ -28,10 +28,14 @@ router.put('/:id', auth.isAuthenticated(), controller.update);
 router.patch('/:id', auth.isAuthenticated(), controller.update);
 router.delete('/:id', auth.isAuthenticated(), controller.destroy);
 
-router.get('/:id/items/:itemid', controller.showItem)
-router.post('/:id/items', auth.isAuthenticated(), controller.createItem)
-router.put('/:id/items/:itemid', auth.isAuthenticated(), controller.updateItem)
-router.patch('/:id/items/:itemid', auth.isAuthenticated(), controller.updateItem)
-router.delete('/:id/items/:itemid', auth.isAuthenticated(), controller.destroyItem)
+//router.get('/:id/providers', controller.showProviders);
+//router.put('/:id/providers', controller.updateProviders);
+//router.patch('/:id/providers', controller.updateProviders);
+
+router.get('/:id/items/:itemid', controller.showItem);
+router.post('/:id/items', auth.isAuthenticated(), controller.createItem);
+router.put('/:id/items/:itemid', auth.isAuthenticated(), controller.updateItem);
+router.patch('/:id/items/:itemid', auth.isAuthenticated(), controller.updateItem);
+router.delete('/:id/items/:itemid', auth.isAuthenticated(), controller.destroyItem);
 
 module.exports = router;

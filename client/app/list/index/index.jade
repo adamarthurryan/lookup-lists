@@ -24,7 +24,7 @@ header#banner.hero-unit
       ul.nav.nav-tabs.nav-stacked.col-md-4.col-lg-4.col-sm-6(ng-repeat='list in lists')
         li
           h4 
-            a(href=href='./edit/{{list._id}}')
+            a(href=href='./list/{{list._id}}')
               | {{list.title}}
             // the list owner only shows if it is not the current user  
             | &nbsp; {{(list.owner._id == getCurrentUser()._id) ? '' : '('+list.owner.name+')'}}

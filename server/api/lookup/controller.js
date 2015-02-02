@@ -11,7 +11,7 @@ exports.providers = function (req, res) {
 
   var providers = _.map(keys, function(key) {
     return {
-      provider: key
+      key: key
     };
   });
 

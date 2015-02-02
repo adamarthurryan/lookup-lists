@@ -5,7 +5,7 @@
 module.exports = {
   // MongoDB connection options
   mongo: {
-    uri: 'mongodb://localhost/learningmeanlists-dev'
+    uri: 'mongodb://mongodb/learningmeanlists-dev'
   },
 
   seedDB: false

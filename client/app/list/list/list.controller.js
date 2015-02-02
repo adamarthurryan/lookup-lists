@@ -1,10 +1,11 @@
 'use strict';
 
 angular.module('learningMeanListsApp')
-  .controller('ListEditCtrl', function ($scope, $http, $routeParams, Auth, socket) {
+  .controller('ListListCtrl', function ($scope, $http, $routeParams, Auth, socket) {
 
     $scope.getCurrentUser = Auth.getCurrentUser;
     $scope.isLoggedIn = Auth.isLoggedIn;
+    $scope.providerEnable = {};
 
 
     $scope.isOwner = function () {
@@ -19,8 +20,6 @@ angular.module('learningMeanListsApp')
     $scope.list= {};
     $scope.lookupProviders = [];
 
-    $scope.jsonlist = "";
-
     //get the list of lookup providers
     $http.get('/api/lookup/providers').success(function(lookupProviders) {
       $scope.lookupProviders = lookupProviders;
@@ -30,9 +29,6 @@ angular.module('learningMeanListsApp')
     //get the list specified by routeParams
     $http.get('/api/lists/'+$routeParams.id).success(function(list) {
       $scope.list = list;
-
-      //for debugging
-      $scope.jsonlist = JSON.stringify(list);
 
       //is this even right?
       socket.syncUpdates('list', $scope.list);
@@ -71,16 +67,7 @@ angular.module('learningMeanListsApp')
       $scope.newTerm = '';
     };
 
-    $scope.refreshListItem = function(item) {
-      $http.get('/api/lookup/'+item.term)
-        .success(function(response) {
-          item['results'] = response.results;
-
-
-          //save them to the database
-          $http.put('/api/lists/'+$scope.list._id+'/items/'+item._id, item);
-        });
-    }
+    
 
     //delete the list item
     $scope.deleteListItem = function(item) {

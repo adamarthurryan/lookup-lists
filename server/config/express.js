@@ -25,8 +25,9 @@ module.exports = function(app) {
   app.set('views', config.root + '/server/views');
   app.set('view engine', 'jade');
   app.use(compression());
-  app.use(bodyParser.urlencoded({ extended: false }));
-  app.use(bodyParser.json());
+  app.use(bodyParser.urlencoded({ limit: '1mb', extended: false }));
+  app.use(bodyParser.json({limit: '1mb'}));
+  
   app.use(methodOverride());
   app.use(cookieParser());
   app.use(passport.initialize());

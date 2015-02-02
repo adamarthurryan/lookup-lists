@@ -136,9 +136,6 @@ exports.createItem = function(req, res) {
 
 // updates a list item
 exports.updateItem = function(req, res) {
-  console.log('updateItem');
-  console.log('list id: '+req.params.id);
-  console.log('item id: '+req.params.itemid);
 
   //delete the id parameter and owner parameter in the request body
   //we do not allow the api client to change ids willy-nilly!
@@ -163,14 +160,15 @@ exports.updateItem = function(req, res) {
     //console.log(JSON.stringify(req.body));
 
 
-    //merge the passed item with the existing item
-    var updatedItem = _.merge(item, req.body);
+    //the passed item completely replaces the old item
+    //set the id manually
+    var updatedItem = _.merge({_id:req.params.itemid}, req.body);
 
     //replace the original item in the list
     list.items.pull(item);
     list.items.push(updatedItem);
 
-    console.log(list);
+    console.log(updatedItem);
 
     //is it now in the list or do we have to do something like the following?
     //item.remove();

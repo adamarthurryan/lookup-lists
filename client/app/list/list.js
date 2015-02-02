@@ -7,8 +7,12 @@ angular.module('learningMeanListsApp')
         templateUrl: 'app/list/index/index.html',
         controller: 'ListIndexCtrl'
       })
-      .when('/edit/:id', {
-        templateUrl: 'app/list/edit/edit.html',
-        controller: 'ListEditCtrl'
+      .when('/list/:id', {
+        templateUrl: 'app/list/view/view.html',
+        controller: 'ListListCtrl'
+      })
+      .when('/list/:id/item/:itemid', {
+        templateUrl: 'app/list/item/item.html',
+        controller: 'ListItemCtrl'
       });
   });
