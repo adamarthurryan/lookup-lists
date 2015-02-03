@@ -8,7 +8,7 @@ angular.module('learningMeanListsApp')
         controller: 'ListIndexCtrl'
       })
       .when('/list/:id', {
-        templateUrl: 'app/list/view/view.html',
+        templateUrl: 'app/list/list/list.html',
         controller: 'ListListCtrl'
       })
       .when('/list/:id/item/:itemid', {

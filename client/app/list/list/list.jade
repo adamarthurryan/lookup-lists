@@ -9,7 +9,7 @@ header#banner.hero-unit
     form.provider-form
       label(ng-repeat='provider in lookupProviders')
         label.checkbox-inline
-          input(type='checkbox', ng-model='providerEnable[provider]')
+          input(type='checkbox', ng-model='provider.selected')
           {{provider.key}}
 
 

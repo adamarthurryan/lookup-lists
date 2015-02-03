@@ -4,6 +4,17 @@ var oboe = require('oboe');
 var http = require('http');
 var events = require('events');
 
+exports.parameters = {
+  fromLang: {
+    type: 'select',
+    options: ['eng', 'deu', 'fre', 'spa', 'por']
+  }, 
+  toLang: {
+    type: 'select',
+    options: ['eng', 'deu', 'fre', 'spa', 'por']
+  }
+};
+
 /* Searches for the given term and returns results to the callback.*/
 exports.search = function(term, callbackDone, callbackResults ) {
   term = term.split(' ').join('+');

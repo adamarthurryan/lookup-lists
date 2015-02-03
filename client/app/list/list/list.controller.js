@@ -50,6 +50,8 @@ angular.module('learningMeanListsApp')
         //(is this even necessary? does socket.io magic obviate this?)
         list.items.push(item);
         
+        /* no longer retrieving results automatically!
+        
         //retrieve the results for this item
         // !!! it is inefficient to wait until the list api has returned to start this lookup
         // !!! to do: use oboe and/or angular-oboe for streaming json requests
@@ -61,6 +63,7 @@ angular.module('learningMeanListsApp')
           //save them to the database
           $http.put('/api/lists/'+list._id+'/items/'+item._id, item);
         });
+        */
       })
 
       

@@ -7,13 +7,7 @@ var lookup = require('../../components/lookup');
 
 
 exports.providers = function (req, res) {
-  var keys = lookup.providers();
-
-  var providers = _.map(keys, function(key) {
-    return {
-      key: key
-    };
-  });
+  var providers = lookup.providers();
 
   res.type('application/json');
   res.json(providers);

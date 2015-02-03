@@ -60,7 +60,7 @@ angular.module('learningMeanListsApp')
     //    $scope.selectedProviders = nv;
     //});
 
-    $scope.refreshItem = function() {
+    $scope.searchItem = function() {
       //$scope.item['results'] = [];
 
       var selectedProviders = _.filter($scope.lookupProviders, {'selected':true});
@@ -80,12 +80,33 @@ angular.module('learningMeanListsApp')
       });
     }
 
-    $scope.selectItem = function (item) {
-      item.selected = true;
+    //toggles the selection of the given item
+    $scope.toggleSelection = function (item) {
+      //only if the current user is the owner
+      if (!$scope.isOwner())
+        return;
+
+      if (item.selected)
+        item.selected = false;
+      else
+        item.selected = true;
     }
 
-    $scope.deselectItem = function (item) {
-      item.selected = false;
-      alert(JSON.stringify(item));
-    }
+
+    //save the selected items when the window is destroyed
+    //does this work if we close the window, or just when we switch controllers?
+    $scope.$on('$destroy', function() {
+      //only if the current user is the owner
+      if (!$scope.isOwner())
+        return;
+
+      //pick the results which have been selected by the user
+      var selectedResults = _.filter($scope.results, {'selected':true});
+      //drop the selected property
+      selectedResults = _.omit(selectedResults, 'selected');
+      
+      //add them to the item and save 
+      $scope.item['results']=selectedResults;
+      $http.put('/api/lists/'+$scope.list._id+'/items/'+$scope.item._id, $scope.item);
+    });
 });

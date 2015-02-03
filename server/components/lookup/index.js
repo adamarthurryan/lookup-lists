@@ -22,8 +22,14 @@ function registerProvider (key, provider) {
 }
 
 /* Returns a list of providers.*/
-exports.providers = function() {
-  return _.keys(providers);
+exports.providers = function() { 
+  providersWithParams = _.map(providers, function (provider, key){
+    return {
+      key: key,
+      parameters: provider.parameters
+    };
+  });
+  return providersWithParams;
 }
 
 /* Looks up the given term with all registered providers. */
