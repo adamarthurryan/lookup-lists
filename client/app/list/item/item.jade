@@ -37,7 +37,7 @@ header#banner.hero-unit
             p {{result.description}} 
            p.text-right
               | [ 
-              a(href='{{result.uri}}' ng-click='$event.stopPropagation()')
+              a(href='{{result.uri}}' target='lookuplist-{{result.provider}}' ng-click='$event.stopPropagation()')
                 | {{result.provider}}
               | ]
 

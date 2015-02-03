@@ -6,15 +6,10 @@ var Readable = require('stream').Readable;
 var providers = {};
 
 //register the providers
-
-var providerOmegawiki = require('./omegawiki');
-registerProvider('omegawiki', providerOmegawiki);
-
-var providerDbpedia = require('./dbpedia');
-registerProvider('dbpedia', providerDbpedia);
-
-var providerOpenLibrary = require('./openlibrary');
-registerProvider('openlibrary', providerOpenLibrary);
+registerProvider('omegawiki', require('./omegawiki'));
+registerProvider('dbpedia', require('./dbpedia'));
+registerProvider('openlibrary', require('./openlibrary'));
+registerProvider('panlex', require('./panlex'));
 
 /* Add the given provider to the hash. */
 function registerProvider (key, provider) {
@@ -33,7 +28,7 @@ exports.providers = function() {
 }
 
 /* Looks up the given term with all registered providers. */
-exports.lookup = function (term) {
+exports.lookup = function (term, parameters) {
   //create a new stream to aggregate for the results
   // can we be sure that the json will arrive intact, or should we use oboe to make sure?
   var stream = new Readable();
@@ -47,10 +42,12 @@ exports.lookup = function (term) {
   var isFirstResult = true;
 
   //for each provider
-  _.each(_.keys(providers), function (key) {
+  _.each(_.keys(providers), function (key, parameters) {
+
+
     count++;
 
-    var lookup = doLookup(term, key);
+    var lookup = doLookup(term, key, parameters);
 
     lookup.on('result', function(result) {
       output = {
@@ -86,10 +83,11 @@ exports.lookup = function (term) {
 }
 
 /* Looks up the given term with the given provider.*/
-exports.lookupWithProvider = function (term, key) {
+exports.lookupWithProvider = function (term, key, parameters) {
   //if the provider is unknown, return an error
-  if (!_.has(providers,key)) 
-    return res.send(501, 'The provider "'+key+'" is not known.');
+  //!!! We need to refactor the lookup component to be an event emitter in order for this to work
+  //if (!_.has(providers,key)) 
+  //  return res.send(501, 'The provider "'+key+'" is not known.');
   
   //create a new stream to aggregate the results
   var stream = new Readable();
@@ -99,7 +97,7 @@ exports.lookupWithProvider = function (term, key) {
 
   var isFirstResult = true;
 
-  var lookup = doLookup(term, key);
+  var lookup = doLookup(term, key, parameters);
 
   lookup.on('result', function(result) {
     output =  {
@@ -136,11 +134,11 @@ exports.lookupWithProvider = function (term, key) {
     result
     error
     */
-function doLookup (term, key) {
+function doLookup (term, key, parameters) {
   var provider = providers[key];
 
   //var isFirstResult = true;
 
   //get the results
-  return provider.search(term);
+  return provider.search(term, parameters);
 }

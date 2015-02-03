@@ -66,7 +66,14 @@ angular.module('learningMeanListsApp')
       var selectedProviders = _.filter($scope.lookupProviders, {'selected':true});
 
       _.forEach(selectedProviders, function (provider) {
-        $http.get('/api/lookup/'+$scope.item.term+'/provider/'+provider.key)
+        //!!! for testing, lets just hardcode panlex to look up eng to deu translations
+        var params = {};
+        if (provider.key =='panlex') 
+          params = {
+            fromLang: ['eng-000'],
+            toLang:['deu-000', 'fre-000']
+          };
+        $http.get('/api/lookup/'+$scope.item.term+'/provider/'+provider.key, {params: params})
           .success(function(response) {
 
             //$scope.item['results']=$scope.item['results'].concat(response.results);

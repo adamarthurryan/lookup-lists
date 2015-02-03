@@ -4,21 +4,14 @@ var oboe = require('oboe');
 var http = require('http');
 var events = require('events');
 
-exports.parameters = {
-  fromLang: {
-    type: 'select',
-    options: ['eng', 'deu', 'fre', 'spa', 'por']
-  }, 
-  toLang: {
-    type: 'select',
-    options: ['eng', 'deu', 'fre', 'spa', 'por']
-  }
-};
 
-/* Searches for the given term and returns results to the callback.*/
-exports.search = function(term, callbackDone, callbackResults ) {
+/* Searches for the given term and returns as events.
+   Listeners should listen to:
+    done - the results have all been returned
+    error(object) - an error occured
+    result(object) - a result was returned */
+exports.search = function(term ) {
   term = term.split(' ').join('+');
-  console.log(lookupPath(term));
 
 
   var emitter = new events.EventEmitter();

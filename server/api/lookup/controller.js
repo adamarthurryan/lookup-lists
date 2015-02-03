@@ -17,7 +17,8 @@ exports.providers = function (req, res) {
 /* Looks up the given term with all registered providers. */
 exports.lookup = function (req, res) {
   var term = req.params.term;
-  var stream = lookup.lookup(term);
+  var parameters = req.query;
+  var stream = lookup.lookup(term, parameters);
 
   res.type('application/json');
   stream.pipe(res);
@@ -27,8 +28,11 @@ exports.lookup = function (req, res) {
 exports.lookupWithProvider = function (req, res) {
   var term = req.params.term;
   var key = req.params.provider;
-
-  var stream = lookup.lookupWithProvider(term, key);
+  var parameters = req.query;
+  console.log(JSON.stringify(parameters));
+  console.log(parameters);
+ 
+  var stream = lookup.lookupWithProvider(term, key, parameters);
 
   res.type('application/json');
   stream.pipe(res);  
